@@ -1,22 +1,12 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { PostFeed } from "@/components/common/posts/post-feed";
-
 import { Loader2 } from "lucide-react";
-import { useMe } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuth";
 
 export default function HomePage() {
-  const me = useMe();
-  const router = useRouter();
+  const { isLoading, error } = useAuthRedirect();
 
-  useEffect(() => {
-    if (!me.isLoading && !me.data?.id) {
-      router.push("/login");
-    }
-  }, [me.data?.id, me.isLoading, router]);
-
-  if (me.isLoading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -24,7 +14,7 @@ export default function HomePage() {
     );
   }
 
-  if (me.error) {
+  if (error) {
     return null;
   }
 

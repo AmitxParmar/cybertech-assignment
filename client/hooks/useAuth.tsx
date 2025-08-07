@@ -1,11 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, setAccessToken } from "@/lib/api";
 import { ApiResponse, User } from "@/types/types";
-
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 // Backend returns: { success, message, data: { user, token? } }
 
 /* use logged in user data: returns: data, success, message */
-export function useMe() {
+/**
+ * Only runs if `enabled` is true.
+ * Pass `enabled` as a parameter to control when the query runs.
+ * Example: useMe({ enabled: isLoggedIn })
+ */
+export function useMe(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
@@ -17,6 +23,7 @@ export function useMe() {
       return res.data.data;
     },
     retry: false,
+    enabled: options?.enabled ?? false, // default: disabled unless enabled is true
   });
 }
 
@@ -66,6 +73,27 @@ export function useRegister() {
       qc.invalidateQueries({ queryKey: ["me"] });
     },
   });
+}
+
+export function useAuthRedirect({
+  enabled = true,
+}: { enabled?: boolean } = {}) {
+  const router = useRouter();
+  const { data, error, isLoading } = useMe({ enabled });
+
+  useEffect(() => {
+    if (!isLoading && error) {
+      // Optional: console.log(error.message);
+      router.replace("/login");
+    }
+  }, [error, isLoading, router]);
+
+  return {
+    user: data,
+    isLoading,
+    error,
+    isAuthenticated: !!data,
+  };
 }
 
 /* Logout mutation */
