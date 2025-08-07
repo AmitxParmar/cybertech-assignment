@@ -19,31 +19,39 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 
 ```text
 /client
+├── .next/                 # Next.js build output (generated files)
 ├── app/                   # Pages and routing via Next.js App Router
-│   ├── api/               # API routes (if any)
-│   ├── profile/
-│   └── layout.tsx         # Root layout
+│   ├── auth/              # Authentication-related pages/components
+│   ├── profile/           # Profile-related pages/components
+│   ├── globals.css        # Global CSS styles for Tailwind
+│   ├── layout.tsx         # Root layout component
+│   └── page.tsx           # Default page (e.g., home page)
 ├── components/            # Reusable UI components
-│   ├── ui/                # ShadCN base components (Button, Card, etc.)
-│   └── PostCard.tsx       # Example custom component
+│   ├── common/            # Shared/common components
+│   │   ├── posts/         # Components related to posts
+│   │   │   └── header.tsx # Header component for posts
+│   │   └── ui/            # ShadCN UI components (Button, Card, etc.)
 ├── hooks/                 # Custom React hooks
-│   └── useUser.ts         # Example hook
-├── lib/
-│   ├── api/               # Axios instance and API service
-│   │   └── apiClient.ts
-│   ├── utils/             # Helper functions
-│   │   └── formatTime.ts
-│   └── Icons/             # Lucide or React Icons wrappers
-│       └── UserIcon.tsx
-├── providers/
-│   ├── QueryClientProvider.tsx  # React Query provider setup
-│   └── ThemeProvider.tsx        # Tailwind dark mode provider
-├── types/                 # Shared TypeScript interfaces
-│   ├── User.ts
-│   ├── Post.ts
-│   └── index.ts
-└── styles/                # Optional global styles or Tailwind imports
-    └── globals.css
+│   ├── useAuth.tsx        # Hook for authentication state management
+│   ├── usePosts.tsx       # Hook for fetching and managing posts
+│   └── useUser.tsx        # Hook for fetching and managing user data
+├── lib/                   # Utility functions and API services
+│   ├── api.ts             # Axios instance or API service
+│   ├── icons.tsx          # Icon components (e.g., Lucide)
+│   └── utils.ts           # Helper utility functions
+├── providers/             # Context providers
+│   ├── QueryProvider.tsx  # React Query provider setup
+│   └── ThemeProvider.tsx  # Tailwind dark/light mode provider
+├── types/                 # TypeScript type definitions
+│   └── env.local.ts       # Environment variable types
+├── .eslintrc.json         # ESLint configuration
+├── next-env.d.ts          # Next.js environment types
+├── package.json           # Project dependencies and scripts
+├── pnpm-lock.yaml         # Package manager lockfile
+├── postcss.config.mjs     # PostCSS configuration
+├── README.md              # Project documentation
+├── tailwind.config.ts     # Tailwind CSS configuration
+└── tsconfig.json          # TypeScript configuration
 ```
 
 ---
