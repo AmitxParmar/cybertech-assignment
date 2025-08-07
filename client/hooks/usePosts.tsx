@@ -4,6 +4,7 @@ import type { ApiResponse, Post } from "@/types/types";
 
 async function getData<T>(url: string) {
   const res = await api.get<ApiResponse<T>>(url);
+  console.log(`getting data of ${url}`, res);
   return res.data.data as T;
 }
 
@@ -17,7 +18,7 @@ export function usePosts() {
 /* Fetch user by id */
 export const usePostsById = (id: string | number) => {
   return useQuery<Post[]>({
-    queryKey: ["post", id],
+    queryKey: ["profile-posts", id],
     queryFn: () => getData(`/posts/user/${id}`),
     enabled: !!id, // Prevent query from running if id is falsy
   });

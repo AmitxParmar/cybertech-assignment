@@ -6,11 +6,6 @@ async function getUserProfileData(userId: string) {
   const res = await api.get<ApiResponse<{ user: User; posts: Post[] }>>(
     `/users/${userId}`
   );
-  // If the API returns null or undefined, throw an error to prevent returning undefined
-  if (!res.data.data) {
-    console.log("User not found!");
-    throw new Error("User not found");
-  }
   return res.data.data;
 }
 
@@ -19,9 +14,12 @@ export function useUserProfile(userId: string | undefined) {
   return useQuery<{ user: User; posts: Post[] }>({
     queryKey: ["user-profile", userId],
     enabled: !!userId,
-    queryFn: () => {
-      if (!userId) throw new Error("No userId provided");
-      return getUserProfileData(userId);
+    queryFn: async () => {
+      const data = await getUserProfileData(userId || "");
+      if (!data) {
+        throw new Error("User not found");
+      }
+      return data;
     },
   });
 }
