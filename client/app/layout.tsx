@@ -34,7 +34,9 @@ export default function RootLayout({
         <ThemeProvider>
           <QueryProvider>
             <Header />
-            <div className="bg-muted">{children}</div>
+            <div className="bg-muted h-[calc(100vh-57px)] overflow-x-hidden">
+              {children}
+            </div>
           </QueryProvider>
         </ThemeProvider>
       </body>

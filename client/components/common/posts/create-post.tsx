@@ -3,33 +3,32 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useMe } from "@/hooks/useAuth";
+import { useAuthRedirect, useMe } from "@/hooks/useAuth";
 import { useCreatePost } from "@/hooks/usePosts";
 import { Loader2 } from "lucide-react";
-import RichTextEditor from "@/components/RichTextEditor";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
+  ssr: false,
+});
 
 export function CreatePost() {
   const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { data } = useMe();
-  console.log(data);
-  const { mutate: createPost } = useCreatePost();
+  const { user } = useAuthRedirect();
+
+  const { mutate: createPost, isPending } = useCreatePost();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-
-    setIsSubmitting(true);
     createPost(content?.trim(), {
       onError: (err) => console.log(err),
       onSuccess: () => setContent(""),
     });
-    setIsSubmitting(false);
   };
 
-  if (!data?.id) return null;
+  if (!user?.id) return null;
 
   return (
     <Card className="rounded-none shadow-none border-y-8 border-black">
@@ -40,9 +39,9 @@ export function CreatePost() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-start space-x-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage alt={data?.name} />
+              <AvatarImage alt={user?.name} />
               <AvatarFallback>
-                {data?.name
+                {user?.name
                   .split(" ")
                   .map((n) => n[0])
                   .join("")
@@ -62,10 +61,10 @@ export function CreatePost() {
                 </span>
                 <Button
                   type="submit"
-                  disabled={!content.trim() || isSubmitting}
+                  disabled={!content.trim() || isPending}
                   size="sm"
                 >
-                  {isSubmitting && (
+                  {isPending && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   Post
