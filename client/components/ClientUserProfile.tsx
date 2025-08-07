@@ -12,6 +12,8 @@ import { Loader2 } from "lucide-react";
 import { useMe } from "@/hooks/useAuth";
 
 export default function ClientUserProfile({ userId }: { userId: string }) {
+  console.log("userId client profile", userId);
+
   const me = useMe();
   const { data: profileUser, isLoading } = useUserProfile(userId);
 

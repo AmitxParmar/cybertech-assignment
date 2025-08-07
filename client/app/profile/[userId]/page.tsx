@@ -1,15 +1,13 @@
 import ClientUserProfile from "@/components/ClientUserProfile";
 
 // Server Component
-export default async function ProfilePage({
+export default function ProfilePage({
   params,
 }: {
-  params: Promise<{ userId: string }>;
+  params: { userId: string };
 }) {
-  const { userId } = await params;
-  // Get userId from route params (Next.js 13+ server component)
-  // @ts-ignore
-  // Next.js passes params as a prop to the page component
-  // See: https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes
+  // No need for URLSearchParams here; userId comes directly from params
+  const { userId } = params;
+  console.log("userId profile test", userId);
   return <ClientUserProfile userId={userId} />;
 }
