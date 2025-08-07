@@ -36,9 +36,9 @@ export function Header() {
 
         <div className="flex w-full items-center justify-between space-x-2 ">
           <nav className="flex justify-end w-full space-x-2">
+            <ThemeSwitcher />
             {me.data?.id ? (
               <>
-                <ThemeSwitcher />
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/">
                     <Home className="h-4 w-4 mr-2" />

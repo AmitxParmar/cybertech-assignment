@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostCard } from "@/components/common/posts/post-card";
@@ -10,11 +10,22 @@ import { Loader2, Calendar, Edit } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useMe } from "@/hooks/useAuth";
 
+// Helper to extract userId from the pathname
+function getUserIdFromPath(pathname: string) {
+  // Assumes path is like /profile/[userId]
+  const parts = pathname.split("/");
+  const profileIndex = parts.findIndex((p) => p === "profile");
+  if (profileIndex !== -1 && parts.length > profileIndex + 1) {
+    return parts[profileIndex + 1];
+  }
+  return null;
+}
+
 export default function ProfilePage() {
-  const params = useParams();
-  const userId = params.userId as string;
+  const pathname = usePathname();
+  const userId = getUserIdFromPath(pathname || "") as string | null;
   const me = useMe();
-  const { data: profileUser, isLoading } = useUserProfile(userId);
+  const { data: profileUser, isLoading } = useUserProfile(userId || "");
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
@@ -24,6 +35,17 @@ export default function ProfilePage() {
     }
   }, [userId, me.data?.id]);
 
+  if (!userId) {
+    return (
+      <div className="container max-w-2xl mx-auto py-6 px-4">
+        <div className="text-center py-8">
+          <h1 className="text-2xl font-bold mb-2">Invalid profile URL</h1>
+          <p className="text-muted-foreground">No userId found in the URL.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
@@ -32,7 +54,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!profileUser) {
+  if (!profileUser?.user) {
     return (
       <div className="container max-w-2xl mx-auto py-6 px-4">
         <div className="text-center py-8">
