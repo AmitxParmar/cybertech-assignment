@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 import { errorHandler } from "./middleware/_errorHandler";
 
 import authRoutes from "./routes/auth.routes";
@@ -11,6 +12,9 @@ import { env } from "./config/env";
 const app = express();
 
 const allowedClientUrls = [env.clientUrl, "http://localhost:3000"];
+
+// Log every request using morgan
+app.use(morgan("dev"));
 
 app.use(
   cors({
@@ -31,6 +35,25 @@ app.get("/allowed-clients", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
+
+// Custom error logging middleware before errorHandler
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    // Log error details
+    console.error(
+      `[${new Date().toISOString()}] Error on ${req.method} ${
+        req.originalUrl
+      }:`,
+      err
+    );
+    next(err);
+  }
+);
 
 app.use(errorHandler);
 

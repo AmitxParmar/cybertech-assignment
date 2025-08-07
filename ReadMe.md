@@ -252,7 +252,9 @@ NODE_ENV=development
 
 ## 🌐 Live Demo
 
-Coming soon! (Run locally for now)
+https://cybertech-assignment-psi.vercel.app/
+
+API URL: https://cybertech-assignment.onrender.com
 
 ---
 
