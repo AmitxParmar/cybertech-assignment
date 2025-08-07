@@ -7,6 +7,7 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 ## 🛠️ Tech Stack
 
 ### **Frontend**
+
 - **Framework**: [Next.js](https://nextjs.org) (App Router)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com)
 - **UI Components**: [ShadCN UI](https://ui.shadcn.com)
@@ -15,24 +16,40 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 - **Utilities**: Axios, Zod (for validation), Custom Hooks & Providers
 
 📁 **Client Directories**:
-\`\`\`
+
+```text
 /client
-├── app/               # Next.js App Router pages
-├── components/        # Reusable UI components
-├── hooks/             # Custom React hooks
+├── app/                   # Pages and routing via Next.js App Router
+│   ├── api/               # API routes (if any)
+│   ├── profile/
+│   └── layout.tsx         # Root layout
+├── components/            # Reusable UI components
+│   ├── ui/                # ShadCN base components (Button, Card, etc.)
+│   └── PostCard.tsx       # Example custom component
+├── hooks/                 # Custom React hooks
+│   └── useUser.ts         # Example hook
 ├── lib/
-│   ├── api/           # Axios instance & API calls
-│   ├── utils/         # Helper functions
-│   └── Icons/         # Icon components (Lucide)
+│   ├── api/               # Axios instance and API service
+│   │   └── apiClient.ts
+│   ├── utils/             # Helper functions
+│   │   └── formatTime.ts
+│   └── Icons/             # Lucide or React Icons wrappers
+│       └── UserIcon.tsx
 ├── providers/
-│   ├── QueryClientProvider.tsx  # React Query provider
-│   └── ThemeProvider.tsx        # Dark/light mode toggle
-└── types/             # Shared TypeScript interfaces
-\`\`\`
+│   ├── QueryClientProvider.tsx  # React Query provider setup
+│   └── ThemeProvider.tsx        # Tailwind dark mode provider
+├── types/                 # Shared TypeScript interfaces
+│   ├── User.ts
+│   ├── Post.ts
+│   └── index.ts
+└── styles/                # Optional global styles or Tailwind imports
+    └── globals.css
+```
 
 ---
 
 ### **Backend**
+
 - **Runtime**: Node.js + Express
 - **Database**: MongoDB (via Mongoose)
 - **Authentication**: JWT + Secure Cookies
@@ -41,33 +58,35 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 - **Type Safety**: TypeScript
 
 📁 **Backend Structure**:
-\`\`\`
+
+```text
 /src/
 ├── config/
-│   ├── env.ts         # Environment variable validation
-│   └── db.ts          # MongoDB connection
+│   ├── env.ts             # Environment variable validation with Zod
+│   └── db.ts              # MongoDB connection via Mongoose
 ├── models/
-│   ├── User.ts        # Mongoose User model
-│   └── Post.ts        # Mongoose Post model
+│   ├── User.ts            # Mongoose schema for User
+│   └── Post.ts            # Mongoose schema for Post
 ├── controllers/
-│   ├── authController.ts   # Auth logic (register, login, logout)
-│   ├── userController.ts   # User profile updates
-│   └── postController.ts   # Post creation & feed logic
+│   ├── authController.ts  # register, login, logout, me
+│   ├── userController.ts  # getUser, updateProfile
+│   └── postController.ts  # createPost, getFeed, getUserPosts
 ├── routes/
-│   ├── authRoutes.ts       # /api/auth/*
-│   ├── userRoutes.ts       # /api/users/*
-│   └── postRoutes.ts       # /api/posts/*
+│   ├── authRoutes.ts      # /api/auth/*
+│   ├── userRoutes.ts      # /api/users/*
+│   └── postRoutes.ts      # /api/posts/*
 ├── middleware/
-│   ├── auth.ts             # Protect routes with JWT
-│   └── errorHandler.ts     # Global error handling
+│   ├── auth.ts            # JWT verification + currentUser
+│   └── errorHandler.ts    # Global error handling middleware
 ├── utils/
-│   ├── jwt.ts              # JWT sign/verify helpers
-│   └── validators.ts       # Zod schemas for input validation
-├── app.ts                  # Express app setup
-└── server.ts               # Server bootstrap (listen on PORT)
-\`\`\`
+│   ├── jwt.ts             # signToken, verifyToken helpers
+│   └── validators.ts      # Zod schemas for request validation
+├── app.ts                 # Express app setup (middleware, routes)
+└── server.ts              # Entry point: starts HTTP server on PORT
+```
 
 🔧 **Config Files**:
+
 - \`.env\` – Environment variables
 - \`tsconfig.json\` – TypeScript configuration
 - \`package.json\` – Scripts & dependencies
@@ -78,66 +97,75 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 ## 🔌 API Endpoints
 
 ### 🔐 **Authentication**
-| Method | Endpoint           | Description                     | Auth Required |
-|-------|--------------------|----------------------------------|-------------|
-| \`POST\` | \`/api/auth/register\` | Register a new user             | No          |
-| \`POST\` | \`/api/auth/login\`    | Log in and get JWT cookie       | No          |
-| \`GET\`  | \`/api/auth/me\`       | Get current user info           | Yes         |
-| \`POST\` | \`/api/auth/logout\`   | Clear auth cookie               | Yes         |
+
+| Method   | Endpoint               | Description               | Auth Required |
+| -------- | ---------------------- | ------------------------- | ------------- |
+| \`POST\` | \`/api/auth/register\` | Register a new user       | No            |
+| \`POST\` | \`/api/auth/login\`    | Log in and get JWT cookie | No            |
+| \`GET\`  | \`/api/auth/me\`       | Get current user info     | Yes           |
+| \`POST\` | \`/api/auth/logout\`   | Clear auth cookie         | Yes           |
 
 ### 📝 **Posts**
-| Method | Endpoint                   | Description                     | Auth Required |
-|-------|----------------------------|----------------------------------|-------------|
-| \`GET\`  | \`/api/posts/feed\`           | Get public home feed            | No          |
-| \`GET\`  | \`/api/posts/user/:userId\`   | Get all posts by a user         | No          |
-| \`POST\` | \`/api/posts\`                | Create a new post               | Yes         |
+
+| Method   | Endpoint                    | Description             | Auth Required |
+| -------- | --------------------------- | ----------------------- | ------------- |
+| \`GET\`  | \`/api/posts/feed\`         | Get public home feed    | No            |
+| \`GET\`  | \`/api/posts/user/:userId\` | Get all posts by a user | No            |
+| \`POST\` | \`/api/posts\`              | Create a new post       | Yes           |
 
 ### 👤 **Users**
-| Method | Endpoint                   | Description                     | Auth Required |
-|-------|----------------------------|----------------------------------|-------------|
-| \`GET\`  | \`/api/users/:userId\`        | Get user profile + posts        | No          |
-| \`PATCH\`| \`/api/users/me\`             | Update name or bio              | Yes         |
+
+| Method    | Endpoint               | Description              | Auth Required |
+| --------- | ---------------------- | ------------------------ | ------------- |
+| \`GET\`   | \`/api/users/:userId\` | Get user profile + posts | No            |
+| \`PATCH\` | \`/api/users/me\`      | Update name or bio       | Yes           |
 
 ---
 
 ## 🧪 Testing with cURL
 
 ### 🔹 Register
+
 \`\`\`bash
 curl -X POST http://localhost:4000/api/auth/register \\
-  -H "Content-Type: application/json" \\
-  -d '{"name":"Alice","email":"alice@example.com","password":"secret123","bio":"Hello"}'
+-H "Content-Type: application/json" \\
+-d '{"name":"Alice","email":"alice@example.com","password":"secret123","bio":"Hello"}'
 \`\`\`
 
 ### 🔹 Login (Get Cookie)
+
 \`\`\`bash
 curl -X POST http://localhost:4000/api/auth/login \\
-  -H "Content-Type: application/json" \\
-  -d '{"email":"alice@example.com","password":"secret123"}' \\
-  -i
+-H "Content-Type: application/json" \\
+-d '{"email":"alice@example.com","password":"secret123"}' \\
+-i
 \`\`\`
 
 > 💡 The JWT is stored in an HTTP-only cookie. Use browser or session-aware tools for real testing.
 
 ### 🔹 Get Current User (Authenticated)
+
 \`\`\`bash
 curl -H "Authorization: Bearer <your_token>" http://localhost:4000/api/auth/me
 \`\`\`
 
 ### 🔹 Create a Post
+
 \`\`\`bash
 curl -X POST http://localhost:4000/api/posts \\
-  -H "Authorization: Bearer <your_token>" \\
-  -H "Content-Type: application/json" \\
-  -d '{"content":"My first post!"}'
+-H "Authorization: Bearer <your_token>" \\
+-H "Content-Type: application/json" \\
+-d '{"content":"My first post!"}'
 \`\`\`
 
 ### 🔹 View Feed
+
 \`\`\`bash
 curl http://localhost:4000/api/posts/feed
 \`\`\`
 
 ### 🔹 View User Profile
+
 \`\`\`bash
 curl http://localhost:4000/api/users/<userId>
 \`\`\`
@@ -145,6 +173,7 @@ curl http://localhost:4000/api/users/<userId>
 ---
 
 ## ⚙️ Environment Variables (.env)
+
 \`\`\`env
 PORT=4000
 MONGO_URI=mongodb://localhost:27017/mini_linkedin
@@ -158,12 +187,12 @@ NODE_ENV=development
 
 ## 📦 Commands
 
-| Command         | Description                     |
-|----------------|----------------------------------|
-| \`pnpm install\` | Install dependencies            |
-| \`pnpm run dev\` | Start dev server (ts-node-dev)  |
-| \`pnpm run build\` | Compile TypeScript to JS      |
-| \`pnpm start\`   | Start production server         |
+| Command            | Description                    |
+| ------------------ | ------------------------------ |
+| \`pnpm install\`   | Install dependencies           |
+| \`pnpm run dev\`   | Start dev server (ts-node-dev) |
+| \`pnpm run build\` | Compile TypeScript to JS       |
+| \`pnpm start\`     | Start production server        |
 
 ---
 
@@ -189,7 +218,7 @@ NODE_ENV=development
    \`\`\`bash
    npx tsc --init
    \`\`\`
-   *(Recommended: Enable strict mode and ES modules)*
+   _(Recommended: Enable strict mode and ES modules)_
 
 5. Create \`.env\` file with the variables above.
 
@@ -202,31 +231,38 @@ NODE_ENV=development
 
 ## 🎨 Features Overview
 
-✅ User registration & login with JWT cookies  
-✅ Protected routes with middleware  
-✅ Post creation and public feed  
-✅ User profile with posts  
-✅ Form validation using Zod  
-✅ Responsive UI with Tailwind & ShadCN  
-✅ Dark mode support  
+✅ User registration & login with JWT cookies
+✅ Protected routes with middleware
+✅ Post creation and public feed
+✅ User profile with posts
+✅ Form validation using Zod
+✅ Responsive UI with Tailwind & ShadCN
+✅ Dark mode support
 ✅ Full TypeScript integration (both client & server)
 
 ---
 
 ## 🌐 Live Demo
+
 Coming soon! (Run locally for now)
 
 ---
 
 ## 🤝 Contributing
+
 Feel free to fork, improve, and submit PRs!
 
 ---
 
 ## 📄 License
+
 MIT
 
 ---
 
-> Made with ❤️ using **Next.js**, **Express**, and **MongoDB**  
-Let your thoughts be posted, not lost. 🚀💬
+> Made with ❤️ using **Next.js**, **Express**, and **MongoDB**
+> Let your thoughts be posted, not lost. 🚀💬
+
+```
+
+```
