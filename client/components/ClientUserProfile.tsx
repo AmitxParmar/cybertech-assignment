@@ -10,12 +10,14 @@ import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/useUser";
 import { Loader2 } from "lucide-react";
 import { useAuthRedirect } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 export default function ClientUserProfile({ userId }: { userId: string }) {
   console.log("userId client profile", userId);
   const { user } = useAuthRedirect();
+  const router = useRouter();
 
-  const { data: profileUser, isLoading } = useUserProfile(userId);
+  const { data: profileUser, isLoading, error } = useUserProfile(userId);
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
@@ -24,6 +26,23 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
       setIsOwnProfile(user?.id === userId);
     }
   }, [userId, user?.id]);
+
+  // Handle error state
+  if (error) {
+    console.error("Error fetching user profile:", error);
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">
+            User not found or error occurred.
+          </p>
+          <Button variant="outline" onClick={() => router.push("/")}>
+            Go Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -37,7 +56,12 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
   if (!profileUser || !profileUser.user) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
-        <p className="text-muted-foreground">User not found.</p>
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">User not found.</p>
+          <Button variant="outline" onClick={() => router.push("/")}>
+            Go Home
+          </Button>
+        </div>
       </div>
     );
   }

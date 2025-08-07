@@ -8,12 +8,33 @@ export async function getUserProfile(req: Request, res: Response) {
     const { userId } = req.params;
     console.debug("getUserProfile called with userId:", userId);
 
+    // Validate userId parameter
+    if (!userId || typeof userId !== "string" || userId.trim() === "") {
+      console.warn("Invalid userId parameter:", userId);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID provided",
+      });
+    }
+
+    // Check if userId is a valid MongoDB ObjectId format
+    if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
+      console.warn("Invalid MongoDB ObjectId format for userId:", userId);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      });
+    }
+
     const user = await User.findById(userId).select("name email bio createdAt");
     console.debug("User found:", user);
 
     if (!user) {
       console.warn("User not found for userId:", userId);
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     const posts = await Post.find({ author: user._id })
@@ -47,22 +68,47 @@ export async function getUserProfile(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Error in getUserProfile:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 }
 
 export async function updateMyProfile(req: Request, res: Response) {
-  const parsed = updateProfileSchema.safeParse(req.body);
-  if (!parsed.success) {
-    return res
-      .status(400)
-      .json({ message: "Invalid input", errors: parsed.error.flatten() });
-  }
-  const updates = parsed.data;
-  const user = await User.findByIdAndUpdate(req.userId!, updates, {
-    new: true,
-  });
-  if (!user) return res.status(404).json({ message: "User not found" });
+  try {
+    const parsed = updateProfileSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input",
+        errors: parsed.error.flatten(),
+      });
+    }
+    const updates = parsed.data;
+    const user = await User.findByIdAndUpdate(req.userId!, updates, {
+      new: true,
+    });
+    if (!user)
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
 
-  res.json({ id: user._id, name: user.name, email: user.email, bio: user.bio });
+    res.json({
+      success: true,
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+      },
+    });
+  } catch (error) {
+    console.error("Error in updateMyProfile:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }

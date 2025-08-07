@@ -1,8 +1,13 @@
 import axios from "axios";
 
+// Log the API URL for debugging
+const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api`;
+console.log("API Base URL:", apiUrl);
+
 export const api = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`, // or your backend URL
+  baseURL: apiUrl,
   withCredentials: true, // send/receive cookies
+  timeout: 10000, // 10 second timeout
 });
 
 // Optional: attach Bearer if you store access token in memory
@@ -23,3 +28,20 @@ api.interceptors.request.use((config) => {
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.error("API Error:", {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      message: error.message,
+      data: error.response?.data,
+    });
+    return Promise.reject(error);
+  }
+);
