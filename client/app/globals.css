@@ -38,6 +38,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -66,12 +67,86 @@
   }
 }
 
+/* app/globals.css */
 
+/* Light mode defaults */
+.ql-container {
+  @apply bg-white text-gray-800;
+}
+
+.ql-editor {
+  @apply min-h-[100px] bg-white text-gray-800 placeholder:text-gray-400;
+}
+
+.ql-toolbar {
+  @apply bg-gray-50 border-gray-300;
+}
+
+.ql-stroke {
+  @apply stroke-gray-600;
+}
+
+.ql-fill,
+.ql-color {
+  @apply fill-gray-600;
+}
+
+.ql-align-center {
+  @apply text-center
+}
+
+ul>li {
+  list-style-type: disc;
+}
+
+ol>li {
+  list-style-type: decimal;
+}
+
+.rich-text-card>h1 {
+  font-size: 2.5rem;
+  line-height: 1;
+  margin: 1rem;
+}
+
+.rich-text-card>h2 {
+  font-size: 1.5rem;
+  line-height: 1;
+  margin: 1rem;
+}
+
+
+
+/* Dark mode overrides */
+.dark .ql-container,
+.dark .ql-toolbar {
+  @apply bg-background border-muted/30 text-white;
+}
+
+.dark .ql-editor {
+  @apply bg-background text-white placeholder:text-gray-400;
+}
+
+.dark .ql-stroke {
+  @apply stroke-black;
+}
+
+.dark .ql-fill,
+.dark .ql-color {
+  @apply fill-white;
+}
+
+/* Optional: Match Tailwind's dark input styles */
+.dark .ql-container {
+  color-scheme: dark;
+  /* Improves caret and placeholder in dark mode */
+}
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

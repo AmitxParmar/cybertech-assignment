@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useMe } from "@/hooks/useAuth";
 import { useCreatePost } from "@/hooks/usePosts";
 import { Loader2 } from "lucide-react";
+import RichTextEditor from "@/components/RichTextEditor";
 
 export function CreatePost() {
   const [content, setContent] = useState("");
@@ -25,14 +26,13 @@ export function CreatePost() {
       onError: (err) => console.log(err),
       onSuccess: () => setContent(""),
     });
-
     setIsSubmitting(false);
   };
 
   if (!data?.id) return null;
 
   return (
-    <Card className="w-full">
+    <Card className="rounded-none shadow-none border-y-8 border-black">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg">Create a post</CardTitle>
       </CardHeader>
@@ -50,12 +50,11 @@ export function CreatePost() {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
-              <Textarea
+              <RichTextEditor
                 placeholder="What's on your mind?"
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={setContent}
                 className="min-h-[100px] resize-none border-0 p-0 focus-visible:ring-0 text-base"
-                maxLength={500}
               />
               <div className="flex items-center justify-between mt-3">
                 <span className="text-xs text-muted-foreground">

@@ -13,7 +13,7 @@ interface PostFeedProps {
 export function PostFeed({ showCreatePost = true }: PostFeedProps) {
   const { data: posts, isLoading, error } = useFeed();
   const me = useMe();
-  console.log("check posts object:", posts);
+
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">

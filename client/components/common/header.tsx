@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useMe, useLogout } from "@/hooks/useAuth";
 import { Home, User, LogOut } from "lucide-react";
+import ThemeSwitcher from "./theme-switcher";
 
 export function Header() {
   const logOut = useLogout();
@@ -37,6 +38,7 @@ export function Header() {
           <nav className="flex justify-end w-full space-x-2">
             {me.data?.id ? (
               <>
+                <ThemeSwitcher />
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/">
                     <Home className="h-4 w-4 mr-2" />

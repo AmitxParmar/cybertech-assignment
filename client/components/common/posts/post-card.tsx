@@ -13,7 +13,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   console.log("post", post);
   return (
-    <Card className="w-full">
+    <Card className="rounded-none border-y-4 border-muted-foreground ">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3">
           <Link href={`/profile/${post.author.id}`}>
@@ -45,10 +45,11 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-          {post.content}
-        </p>
+      <CardContent className="pt-0 max-h-96 overflow-auto">
+        <div
+          className="text-sm rich-text-card !dark:text-white overflow-x-hidden overflow-y-auto leading-relaxed px-6"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
       </CardContent>
     </Card>
   );

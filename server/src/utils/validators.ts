@@ -18,7 +18,7 @@ export const updateProfileSchema = z.object({
 });
 
 export const createPostSchema = z.object({
-  content: z.string().min(1).max(1000),
+  content: z.string().min(1).max(3000),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

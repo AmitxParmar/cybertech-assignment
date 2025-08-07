@@ -52,7 +52,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="container flex mx-auto items-center justify-center min-h-[calc(100vh-3.5rem)] py-6 px-4">
+    <div className="container flex mx-auto items-center justify-center min-h-[calc(100vh-3.5rem)] py-6 px-4 flex-col">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
@@ -129,6 +129,14 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
+      {/* Test credentials below login component */}
+      <div className="mt-4 text-center">
+        <p className="text-red-600 text-sm font-semibold">
+          Test Login: <br />
+          Email: test1@test.com <br />
+          Password: test1@test.com
+        </p>
+      </div>
     </div>
   );
 }
