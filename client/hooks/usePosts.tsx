@@ -23,6 +23,7 @@ export const usePostsById = (id: string | number) => {
   });
 };
 
+/* Fetch home feed, posts of all the users */
 export function useFeed() {
   return useQuery<Post[]>({
     queryKey: ["feed"],
@@ -35,13 +36,21 @@ export function useCreatePost() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (content: string) => {
-      // Ensure the payload is always an object with a content property
       const payload = typeof content === "string" ? { content } : content;
-      const { data } = await api.post<Post>("/posts", payload);
-      return data;
+      const { data } = await api.post<ApiResponse<Post>>("/posts", payload);
+      return data.data; // data.data is the new post
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["posts"] });
+    onSuccess: (newPost) => {
+      // Update the "posts" cache with the new post at the start
+      qc.setQueryData<Post[]>(["posts"], (old) => {
+        if (!old) return newPost ? [newPost] : [];
+        return newPost ? [newPost, ...old] : old;
+      });
+      // Also update the "feed" cache if it exists
+      qc.setQueryData<Post[]>(["feed"], (old) => {
+        if (!old) return newPost ? [newPost] : [];
+        return newPost ? [newPost, ...old] : old;
+      });
     },
   });
 }

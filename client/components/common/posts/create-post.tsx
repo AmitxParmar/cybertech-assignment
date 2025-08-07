@@ -21,19 +21,15 @@ export function CreatePost() {
     if (!content.trim()) return;
 
     setIsSubmitting(true);
-    const result = createPost(content?.trim(), {
+    createPost(content?.trim(), {
       onError: (err) => console.log(err),
+      onSuccess: () => setContent(""),
     });
-    console.log("result create poset", result);
-    /*   if (result.success) {
-      setContent("");
-      refetch(); 
-    } */
 
     setIsSubmitting(false);
   };
-  /* 
-  if (!data?.user) return null; */
+
+  if (!data?.id) return null;
 
   return (
     <Card className="w-full">

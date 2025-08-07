@@ -1,4 +1,3 @@
-import { Header } from "@/components/common/header";
 import React from "react";
 
 const AuthLayout = ({
