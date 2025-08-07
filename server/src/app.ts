@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: [env.clientUrl], // configure specific origin for production
+    origin: [env.clientUrl, "http://localhost:3000"],
     credentials: true,
   })
 );

@@ -1,7 +1,8 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
+import { IUser } from "./User";
 
 export interface IPost extends Document {
-  author: Types.ObjectId;
+  author: IUser;
   content: string;
   createdAt: Date;
   updatedAt: Date;

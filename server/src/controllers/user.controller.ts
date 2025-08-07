@@ -4,28 +4,51 @@ import { Post } from "../models/Post";
 import { updateProfileSchema } from "../utils/validators";
 
 export async function getUserProfile(req: Request, res: Response) {
-  const { userId } = req.params;
-  const user = await User.findById(userId).select("name email bio createdAt");
-  if (!user) return res.status(404).json({ message: "User not found" });
+  try {
+    const { userId } = req.params;
+    console.debug("getUserProfile called with userId:", userId);
 
-  const posts = await Post.find({ author: user._id })
-    .sort({ createdAt: -1 })
-    .lean();
+    const user = await User.findById(userId).select("name email bio createdAt");
+    console.debug("User found:", user);
 
-  res.json({
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      bio: user.bio,
-      createdAt: user.createdAt,
-    },
-    posts: posts.map((p) => ({
-      id: p._id,
-      content: p.content,
-      createdAt: p.createdAt,
-    })),
-  });
+    if (!user) {
+      console.warn("User not found for userId:", userId);
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const posts = await Post.find({ author: user._id })
+      .populate("author", "name")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    console.debug(`Found ${posts.length} posts for userId:`, userId);
+
+    res.json({
+      success: true,
+      message: "Successfully fetched user profile and posts!",
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          bio: user.bio,
+          createdAt: user.createdAt,
+        },
+        posts: posts.map((p) => ({
+          id: p._id,
+          content: p.content,
+          createdAt: p.createdAt,
+          author: {
+            id: p.author._id,
+            name: p.author?.name,
+          },
+        })),
+      },
+    });
+  } catch (error) {
+    console.error("Error in getUserProfile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 }
 
 export async function updateMyProfile(req: Request, res: Response) {

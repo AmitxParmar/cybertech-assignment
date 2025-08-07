@@ -6,6 +6,7 @@ import z from "zod";
 
 export async function createPost(req: Request, res: Response) {
   const parsed = createPostSchema.safeParse(req.body);
+  console.log(parsed);
   if (!parsed.success) {
     return res.status(400).json({
       success: false,
@@ -13,11 +14,14 @@ export async function createPost(req: Request, res: Response) {
       errors: z.treeifyError(parsed.error),
     });
   }
+
   const post = await Post.create({
     author: req.userId!,
     content: parsed.data.content,
   });
+
   const author = await User.findById(req.userId!).select("name");
+
   res.status(201).json({
     success: true,
     message: "Post created successfully",
