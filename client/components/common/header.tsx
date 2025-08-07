@@ -11,17 +11,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMe, useLogout } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useAuth";
+import { useAuthRedirect } from "@/hooks/useAuth"; // Import the hook as per file_context_0
 import { Home, User, LogOut } from "lucide-react";
 import ThemeSwitcher from "./theme-switcher";
 
 export function Header() {
   const logOut = useLogout();
-  const me = useMe();
+  const {
+    user: me,
+    isLoading,
+    isAuthenticated,
+  } = useAuthRedirect({ enabled: true });
   const router = useRouter();
 
   const handleLogout = async () => {
-    logOut.mutateAsync();
+    await logOut.mutateAsync();
     router.push("/login");
   };
 
@@ -37,7 +42,8 @@ export function Header() {
         <div className="flex w-full items-center justify-between space-x-2 ">
           <nav className="flex justify-end w-full space-x-2">
             <ThemeSwitcher />
-            {me.data?.id ? (
+            {/* Only show auth buttons when not loading */}
+            {!isLoading && isAuthenticated ? (
               <>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/">
@@ -54,7 +60,7 @@ export function Header() {
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>
-                          {me.data.name
+                          {me?.name
                             ?.split(" ")
                             .map((n) => n[0])
                             .join("")
@@ -66,15 +72,15 @@ export function Header() {
                   <DropdownMenuContent className="w-56" align="end" forceMount>
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1 leading-none">
-                        <p className="font-medium">{me.data.name}</p>
+                        <p className="font-medium">{me?.name}</p>
                         <p className="w-[200px] truncate text-sm text-muted-foreground">
-                          {me.data.email}
+                          {me?.email}
                         </p>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href={`/profile/${me.data.id}`}>
+                      <Link href={`/profile/${me?.id}`}>
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </Link>
@@ -88,14 +94,16 @@ export function Header() {
                 </DropdownMenu>
               </>
             ) : (
-              <div className="flex items-center space-x-2">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/register">Sign Up</Link>
-                </Button>
-              </div>
+              !isLoading && (
+                <div className="flex items-center space-x-2">
+                  <Button variant="ghost" size="sm" asChild>
+                    <Link href="/login">Login</Link>
+                  </Button>
+                  <Button size="sm" asChild>
+                    <Link href="/register">Sign Up</Link>
+                  </Button>
+                </div>
+              )
             )}
           </nav>
         </div>
