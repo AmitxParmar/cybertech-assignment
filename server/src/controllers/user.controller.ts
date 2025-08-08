@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { User } from "../models/User";
 import { Post } from "../models/Post";
 import { updateProfileSchema } from "../utils/validators";
+import z from "zod";
 
 export async function getUserProfile(req: Request, res: Response) {
   try {
@@ -82,7 +83,7 @@ export async function updateMyProfile(req: Request, res: Response) {
       return res.status(400).json({
         success: false,
         message: "Invalid input",
-        errors: parsed.error.flatten(),
+        errors: z.treeifyError(parsed.error),
       });
     }
     const updates = parsed.data;

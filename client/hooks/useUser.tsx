@@ -1,7 +1,7 @@
 "use client";
 import { api } from "@/lib/api";
 import { ApiResponse, Post, User } from "@/types/types";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 async function getUserProfileData(userId: string) {
   const res = await api.get(`/api/users/${userId}`);
@@ -27,5 +27,24 @@ export function useUserProfile(userId: string) {
     queryFn: () => getUserProfileData(userId),
     enabled: !!userId,
     retry: 2,
+  });
+}
+
+type UpdateProfileInput = {
+  name?: string;
+  bio?: string;
+};
+
+export function useUpdateProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: UpdateProfileInput) => {
+      const res = await api.patch<ApiResponse<User>>("/api/users/me", data);
+      return res.data.data;
+    },
+    onSuccess: (updatedUser) => {
+      // Invalidate or update relevant queries, e.g. user-profile
+      qc.invalidateQueries({ queryKey: ["user-profile"] });
+    },
   });
 }

@@ -11,15 +11,16 @@ import { useUserProfile } from "@/hooks/useUser";
 import { Loader2 } from "lucide-react";
 import { useAuthRedirect } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { UpdateDialog } from "./UpdateDialog";
 
 export default function ClientUserProfile({ userId }: { userId: string }) {
   const router = useRouter();
-  console.log("userId client profile", userId);
 
   const { user } = useAuthRedirect();
   const { data: profileUser, isLoading } = useUserProfile(userId);
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [openDialog, setOpenUpdateDialog] = useState(false);
 
   useEffect(() => {
     if (userId) {
@@ -34,7 +35,6 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
       </div>
     );
   }
-  console.log("profileUser", profileUser);
 
   const userName = profileUser?.user?.name || "";
   const userEmail = profileUser?.user?.email || "";
@@ -77,10 +77,21 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold">{userName}</h1>
                 {isOwnProfile && (
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit Profile
-                  </Button>
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setOpenUpdateDialog(true)}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                    <UpdateDialog
+                      open={openDialog}
+                      onOpenChange={setOpenUpdateDialog}
+                      defaultValues={profileUser?.user}
+                    />
+                  </>
                 )}
               </div>
               <p className="text-muted-foreground">{userEmail}</p>

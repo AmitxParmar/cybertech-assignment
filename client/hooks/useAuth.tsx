@@ -3,6 +3,7 @@ import { api, setAccessToken } from "@/lib/api";
 import { ApiResponse, User } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { success } from "zod";
 // Backend returns: { success, message, data: { user, token? } }
 
 /* use logged in user data: returns: data, success, message */
@@ -79,20 +80,20 @@ export function useAuthRedirect({
   enabled = true,
 }: { enabled?: boolean } = {}) {
   const router = useRouter();
-  const { data, error, isLoading } = useMe({ enabled });
+  const { data, error, isLoading, status } = useMe({ enabled });
 
   useEffect(() => {
     if (!isLoading && error) {
-      // Optional: console.log(error.message);
+      console.log(error.message);
       router.replace("/login");
     }
   }, [error, isLoading, router]);
-
+  console.log(status === "success");
   return {
     user: data,
     isLoading,
     error,
-    isAuthenticated: !!data,
+    isAuthenticated: status === "success",
   };
 }
 

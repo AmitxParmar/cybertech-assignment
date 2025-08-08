@@ -4,6 +4,23 @@ A full-stack social platform inspired by LinkedIn, built with modern technologie
 
 ---
 
+## ✨ Features
+
+1. **User Authentication**
+
+   - Register and log in with email and password
+   - User profile includes name, email, and bio
+
+2. **Public Post Feed**
+
+   - Create, read, and display text-only posts with rich text editor with different formatting feature.
+   - Home feed shows posts with author’s name and timestamp
+
+3. **Profile Page**
+   - View any user’s profile and their posts
+   - Update your name and bio
+   - Supports both dark and light mode
+
 ## 🛠️ Tech Stack
 
 ### **Frontend**
@@ -145,7 +162,7 @@ curl -X POST http://localhost:4000/api/auth/register \\
 \`\`\`bash
 curl -X POST http://localhost:4000/api/auth/login \\
 -H "Content-Type: application/json" \\
--d '{"email":"alice@example.com","password":"secret123"}' \\
+-d '{"email":"test1@test.com","password":"test1@test.com"}' \\
 -i
 \`\`\`
 
@@ -247,6 +264,8 @@ NODE_ENV=development
 ✅ Responsive UI with Tailwind & ShadCN
 ✅ Dark mode support
 ✅ Full TypeScript integration (both client & server)
+✅ Theme switcher
+✅ Rich text editor to format text
 
 ---
 

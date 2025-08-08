@@ -2,9 +2,19 @@
 import { PostFeed } from "@/components/common/posts/post-feed";
 import { Loader2 } from "lucide-react";
 import { useAuthRedirect } from "@/hooks/useAuth";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const { isLoading, error } = useAuthRedirect();
+  const router = useRouter();
+  const { isLoading, error, isAuthenticated } = useAuthRedirect();
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+    if (!isAuthenticated && !isLoading) {
+      router.push("/login");
+    }
+  }, []);
 
   if (isLoading) {
     return (
