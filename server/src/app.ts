@@ -10,7 +10,6 @@ import userRoutes from "./routes/user.route";
 import { env } from "./config/env";
 
 const app = express();
-
 const allowedClientUrls = [env.clientUrl, "http://localhost:3000"];
 
 // Log every request using morgan
@@ -23,6 +22,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

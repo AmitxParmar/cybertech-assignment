@@ -5,7 +5,18 @@ import { updateProfileSchema } from "../utils/validators";
 
 export async function getUserProfile(req: Request, res: Response) {
   try {
-    const { userId } = req.params;
+    // Vercel and some proxies may lowercase or change param casing, so check both
+    // Also, sometimes params may be empty if the route is not matched as expected
+    let userId =
+      req.params.userId ||
+      req.params.userid ||
+      req.query.userId ||
+      req.query.userid ||
+      req.body.userId ||
+      req.body.userid;
+
+    if (Array.isArray(userId)) userId = userId[0];
+
     console.debug("getUserProfile called with userId:", userId);
 
     // Validate userId parameter
