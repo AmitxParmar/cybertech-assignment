@@ -15,7 +15,7 @@ export function useMe(options?: { enabled?: boolean }) {
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      const res = await api.get<ApiResponse<User>>("/auth/me");
+      const res = await api.get<ApiResponse<User>>("/api/auth/me");
       if (!res.data.success) {
         throw new Error(res.data.message || "Failed to fetch user");
       }
@@ -33,7 +33,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: async (body: { email: string; password: string }) => {
       const res = await api.post<ApiResponse<{ user: User; token?: string }>>(
-        "/auth/login",
+        "/api/auth/login",
         body
       );
       if (!res.data.success) {
@@ -59,7 +59,7 @@ export function useRegister() {
       bio?: string;
     }) => {
       const res = await api.post<ApiResponse<{ user: User; token?: string }>>(
-        "/auth/register",
+        "/api/auth/register",
         body
       );
       console.log(res);
@@ -101,7 +101,7 @@ export function useLogout() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      await api.post("/auth/logout"); // server clears HttpOnly cookie
+      await api.post("/api/auth/logout"); // server clears HttpOnly cookie
       setAccessToken(null);
     },
     onSuccess: () => {

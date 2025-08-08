@@ -2,11 +2,12 @@ import { api } from "@/lib/api";
 import { ApiResponse, Post, User } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 
-async function getUserProfileData(userId: string) {
+// Helper to extract the actual data from the ApiResponse
+async function getUserProfileData(
+  userId: string
+): Promise<{ user: User; posts: Post[] }> {
   try {
-    const res = await api.get<ApiResponse<{ user: User; posts: Post[] }>>(
-      `/users/${userId}`
-    );
+    const res = await api.get(`/api/users/${userId}`);
     console.log("user profile data", res.data);
 
     if (!res.data.success) {
@@ -17,7 +18,8 @@ async function getUserProfileData(userId: string) {
       throw new Error("User profile data not found");
     }
 
-    return res.data.data;
+    // Return only the data property, which should be { user, posts }
+    return res.data.data as { user: User; posts: Post[] };
   } catch (error: any) {
     console.error("Error fetching user profile:", error);
 
@@ -48,8 +50,7 @@ async function getUserProfileData(userId: string) {
 export function useUserProfile(userId: string) {
   return useQuery<{ user: User; posts: Post[] }>({
     queryKey: ["user-profile", userId],
-    enabled: !!userId && userId.trim() !== "",
-    queryFn: async () => await getUserProfileData(userId),
+    queryFn: () => getUserProfileData(userId),
     retry: (failureCount, error: any) => {
       // Don't retry on 404 errors (user not found)
       if (error.message === "User not found") {

@@ -11,7 +11,7 @@ async function getData<T>(url: string) {
 export function usePosts() {
   return useQuery<Post[]>({
     queryKey: ["posts"],
-    queryFn: async () => await getData("/posts"),
+    queryFn: async () => await getData("/api/posts"),
   });
 }
 
@@ -19,7 +19,7 @@ export function usePosts() {
 export const usePostsById = (id: string | number) => {
   return useQuery<Post[]>({
     queryKey: ["profile-posts", id],
-    queryFn: () => getData(`/posts/user/${id}`),
+    queryFn: () => getData(`/api/posts/user/${id}`),
     enabled: !!id, // Prevent query from running if id is falsy
   });
 };
@@ -28,7 +28,7 @@ export const usePostsById = (id: string | number) => {
 export function useFeed() {
   return useQuery<Post[]>({
     queryKey: ["feed"],
-    queryFn: async () => await getData("/posts/feed"),
+    queryFn: async () => await getData("/api/posts/feed"),
   });
 }
 
@@ -38,7 +38,7 @@ export function useCreatePost() {
   return useMutation({
     mutationFn: async (content: string) => {
       const payload = typeof content === "string" ? { content } : content;
-      const { data } = await api.post<ApiResponse<Post>>("/posts", payload);
+      const { data } = await api.post<ApiResponse<Post>>("/api/posts", payload);
       return data.data; // data.data is the new post
     },
     onSuccess: (newPost) => {

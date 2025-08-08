@@ -1,8 +1,7 @@
 import axios from "axios";
 
 // Log the API URL for debugging
-const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api`;
-console.log("API Base URL:", apiUrl);
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export const api = axios.create({
   baseURL: apiUrl,
