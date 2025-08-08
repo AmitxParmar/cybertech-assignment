@@ -1,3 +1,4 @@
+"use client";
 import { api } from "@/lib/api";
 import { ApiResponse, Post, User } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +20,7 @@ async function getUserProfileData(
     }
 
     // Return only the data property, which should be { user, posts }
-    return res.data.data as { user: User; posts: Post[] };
+    return res.data as { user: User; posts: Post[] };
   } catch (error: any) {
     console.error("Error fetching user profile:", error);
 

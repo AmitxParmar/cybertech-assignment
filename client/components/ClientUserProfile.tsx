@@ -27,23 +27,6 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
     }
   }, [userId, user?.id]);
 
-  // Handle error state
-  if (error) {
-    console.error("Error fetching user profile:", error);
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">
-            User not found or error occurred.
-          </p>
-          <Button variant="outline" onClick={() => router.push("/")}>
-            Go Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
