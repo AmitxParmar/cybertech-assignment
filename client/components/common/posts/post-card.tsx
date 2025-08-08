@@ -49,7 +49,7 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-4 pb-2 max-h-96 overflow-auto bg-black">
+      <CardContent className="pt-4 pb-2 max-h-96 overflow-auto dark:bg-black">
         <div
           className="text-base rich-text-card !dark:text-white overflow-x-hidden overflow-y-auto leading-relaxed px-2 sm:px-6 py-1"
           dangerouslySetInnerHTML={{ __html: post.content }}
