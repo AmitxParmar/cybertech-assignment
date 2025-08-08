@@ -35,25 +35,11 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
     );
   }
 
-  // If profileUser is undefined (e.g. user not found), show a fallback
-  if (!profileUser || !profileUser.user) {
-    return (
-      <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-4">User not found.</p>
-          <Button variant="outline" onClick={() => router.push("/")}>
-            Go Home
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const userName = profileUser.user.name || "";
-  const userEmail = profileUser.user.email || "";
-  const userBio = profileUser.user.bio;
-  const userCreatedAt = profileUser.user.createdAt;
-  const posts = profileUser.posts || [];
+  const userName = profileUser?.user.name || "";
+  const userEmail = profileUser?.user.email || "";
+  const userBio = profileUser?.user.bio;
+  const userCreatedAt = profileUser?.user.createdAt;
+  const posts = profileUser?.posts || [];
 
   // Defensive: avoid undefined for createdAt
   let joinedText = "Unknown";
@@ -70,7 +56,7 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
   // Defensive: avoid undefined for name
   const firstName = userName.split(" ")[0] || userName;
 
-  return (
+  return profileUser ? (
     <div className="container max-w-2xl mx-auto py-6 px-4">
       {/* Profile Header */}
       <Card className="mb-6">
@@ -143,5 +129,16 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
         )}
       </div>
     </div>
+  ) : (
+    !profileUser && (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">User not found.</p>
+          <Button variant="outline" onClick={() => router.push("/")}>
+            Go Home
+          </Button>
+        </div>
+      </div>
+    )
   );
 }
