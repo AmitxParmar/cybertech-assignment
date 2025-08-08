@@ -49,31 +49,20 @@ export async function getUserProfile(req: Request, res: Response) {
     }
 
     const posts = await Post.find({ author: user._id })
-      .populate("author", "name")
       .sort({ createdAt: -1 })
+      .populate("author", "name")
       .lean();
-
-    console.debug(`Found ${posts.length} posts for userId:`, userId);
 
     res.json({
       success: true,
       message: "Successfully fetched user profile and posts!",
       data: {
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          bio: user.bio,
-          createdAt: user.createdAt,
-        },
+        user,
         posts: posts.map((p) => ({
           id: p._id,
           content: p.content,
           createdAt: p.createdAt,
-          author: {
-            id: p.author._id,
-            name: p.author?.name,
-          },
+          author: { id: (p as any).author?._id, name: (p as any).author?.name },
         })),
       },
     });

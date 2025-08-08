@@ -7,23 +7,20 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  // Ensure proper handling of dynamic routes
-
-  // Add proper error handling for dynamic routes
-  async redirects() {
-    return [];
-  },
-  // Add proper rewrites for API routes if needed
   async rewrites() {
+    // Ensure the environment variable is defined and starts with a valid protocol
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl || !/^https?:\/\//.test(apiUrl)) {
+      throw new Error(
+        "NEXT_PUBLIC_API_URL environment variable must be defined and start with 'http://' or 'https://'"
+      );
+    }
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`,
+        destination: `${apiUrl}/api/:path*`,
       },
     ];
-  },
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 };
 

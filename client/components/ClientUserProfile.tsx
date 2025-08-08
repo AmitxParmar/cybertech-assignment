@@ -13,11 +13,11 @@ import { useAuthRedirect } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 export default function ClientUserProfile({ userId }: { userId: string }) {
-  console.log("userId client profile", userId);
-  const { user } = useAuthRedirect();
   const router = useRouter();
+  console.log("userId client profile", userId);
 
-  const { data: profileUser, isLoading, error } = useUserProfile(userId);
+  const { user } = useAuthRedirect();
+  const { data: profileUser, isLoading } = useUserProfile(userId);
 
   const [isOwnProfile, setIsOwnProfile] = useState(false);
 
@@ -34,11 +34,12 @@ export default function ClientUserProfile({ userId }: { userId: string }) {
       </div>
     );
   }
+  console.log("profileUser", profileUser);
 
-  const userName = profileUser?.user.name || "";
-  const userEmail = profileUser?.user.email || "";
-  const userBio = profileUser?.user.bio;
-  const userCreatedAt = profileUser?.user.createdAt;
+  const userName = profileUser?.user?.name || "";
+  const userEmail = profileUser?.user?.email || "";
+  const userBio = profileUser?.user?.bio;
+  const userCreatedAt = profileUser?.user?.createdAt;
   const posts = profileUser?.posts || [];
 
   // Defensive: avoid undefined for createdAt

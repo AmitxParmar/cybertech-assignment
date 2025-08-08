@@ -13,6 +13,7 @@ interface PostFeedProps {
 export function PostFeed({ showCreatePost = true }: PostFeedProps) {
   const { data: posts, isLoading, error } = useFeed();
   const me = useMe();
+  console.log("feed content", posts);
 
   if (isLoading) {
     return (
